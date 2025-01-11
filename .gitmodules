@@ -1,0 +1,3 @@
+[submodule "desktopClient"]
+	path = desktopClient
+	url = https://github.com/cuibus/SCDproiect_client2.git
