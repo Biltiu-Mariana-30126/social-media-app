@@ -29,7 +29,7 @@ public class Post {
     private String title;
 
     @ManyToOne
-    @JoinC olumn(name="user_id", nullable = true)
+    @JoinColumn(name="user_id", nullable = true)
     private User user;
 
     public int getId() {
@@ -72,11 +72,7 @@ public class Post {
         this.title = title;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Post that = (Post) o;
-        return id == that.id && Objects.equals(content, that.content) && Objects.equals(createdOn, that.createdOn) && Objects.equals(status, that.status) && Objects.equals(title, that.title) && Objects.equals(userId, that.userId);
-    }
+    public User getUser() { return user; }
+
+    public void setUser(User user) { this.user = user; }
 }

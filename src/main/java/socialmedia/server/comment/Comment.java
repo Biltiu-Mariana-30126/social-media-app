@@ -1,6 +1,8 @@
 package socialmedia.server.comment;
 
 import jakarta.persistence.*;
+import socialmedia.server.post.Post;
+import socialmedia.server.user.User;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -9,23 +11,30 @@ import java.util.Objects;
 @Entity
 @Table(name = "comment", schema = "socialmedia", catalog = "")
 public class Comment {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idcomment")
     private int idcomment;
+
     @Basic
-    @Column(name = "content")
+    @Column(name = "content", nullable = false)
     private String content;
+
+    // Establish a Many-to-One relationship with Post
+    @ManyToOne
+    @JoinColumn(name = "post_id", nullable = false)
+    private Post post;
+
+    // Establish a Many-to-One relationship with User
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     @Basic
-    @Column(name = "post_id")
-    private Integer postId;
-    @Basic
-    @Column(name = "user_id")
-    private Integer userId;
-    @Basic
-    @Column(name = "create_on")
+    @Column(name = "create_on", nullable = false)
     private Date createOn;
 
+    // Getters and Setters
     public int getIdcomment() {
         return idcomment;
     }
@@ -42,20 +51,20 @@ public class Comment {
         this.content = content;
     }
 
-    public Integer getPostId() {
-        return postId;
+    public Post getPost() {
+        return post;
     }
 
-    public void setPostId(Integer postId) {
-        this.postId = postId;
+    public void setPost(Post post) {
+        this.post = post;
     }
 
-    public Integer getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Date getCreateOn() {
@@ -66,16 +75,21 @@ public class Comment {
         this.createOn = createOn;
     }
 
+    // Override equals and hashCode
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Comment that = (Comment) o;
-        return idcomment == that.idcomment && Objects.equals(content, that.content) && Objects.equals(postId, that.postId) && Objects.equals(userId, that.userId) && Objects.equals(createOn, that.createOn);
+        Comment comment = (Comment) o;
+        return idcomment == comment.idcomment &&
+                Objects.equals(content, comment.content) &&
+                Objects.equals(post, comment.post) &&
+                Objects.equals(user, comment.user) &&
+                Objects.equals(createOn, comment.createOn);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idcomment, content, postId, userId, createOn);
+        return Objects.hash(idcomment, content, post, user, createOn);
     }
 }
