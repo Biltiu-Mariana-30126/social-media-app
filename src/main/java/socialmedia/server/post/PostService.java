@@ -24,4 +24,16 @@ public class PostService {
     @Transactional
     public void deleteById(int id) { postRepository.deleteById(id); }
 
+    public Post updatePost(int id, Post updatedPost) {
+        Post existingPost = postRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Post not found with id: " + id));
+
+        // Update the existing post's fields
+        existingPost.setTitle(updatedPost.getTitle());
+        existingPost.setContent(updatedPost.getContent());
+        existingPost.setStatus(updatedPost.getStatus());
+
+        return postRepository.save(existingPost);
+    }
+
 }

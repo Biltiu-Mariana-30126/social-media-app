@@ -21,7 +21,7 @@ public class Post {
     @CreationTimestamp
     @Column(updatable = false, nullable = false)
     private Date createdOn;
-    @Basic
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private Status status;
     @Basic

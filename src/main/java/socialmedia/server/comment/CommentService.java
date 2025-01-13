@@ -24,4 +24,14 @@ public class CommentService {
     @Transactional
     public void deleteById(int id) { commentRepository.deleteById(id); }
 
+    public Comment updateComment(int id, Comment updatedComment) {
+        Comment existingComment = commentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Comment not found with id: " + id));
+
+        // Update the existing comment's fields
+        existingComment.setContent(updatedComment.getContent());
+
+        return commentRepository.save(existingComment);
+    }
+
 }
