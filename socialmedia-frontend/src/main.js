@@ -1,10 +1,17 @@
-import { createApp } from 'vue'
-import App from './App.vue'
-import vuetify from './plugins/vuetify'
-import { loadFonts } from './plugins/webfontloader'
+import { createApp } from 'vue';
+import App from './App.vue';
+import { createVuetify } from 'vuetify';
+import 'vuetify/styles';
+import router from "@/router"; // import the styles
 
-loadFonts()
+// createVuetify is used in Vuetify 3
+const vuetify = createVuetify();
 
-createApp(App)
-  .use(vuetify)
-  .mount('#app')
+const app = createApp(App);
+
+// Use Vuetify
+app.use(vuetify);
+app.use(router);
+
+// Mount the app
+app.mount('#app');
