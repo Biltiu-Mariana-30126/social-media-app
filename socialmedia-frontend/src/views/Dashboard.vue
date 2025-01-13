@@ -1,5 +1,7 @@
 <template>
   <v-container>
+    <h1 v-if="currentUser">Welcome, {{ currentUser.name }}!</h1>
+
     <v-row>
       <v-col v-for="post in posts" :key="post.id" cols="12" sm="6" md="4">
         <v-card>

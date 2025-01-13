@@ -1,6 +1,8 @@
 package socialmedia.server.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,5 +37,27 @@ public class UserController {
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable int id) {
         userService.deleteById(id);
+    }
+
+    // Login endpoint: authenticate the user by email
+    @PostMapping("/login")
+    public ResponseEntity<User> login(@RequestBody String email) {
+        try {
+            // Call the service to find user by email
+            User user = userService.authenticateByEmail(email);
+
+            // If user is found, return 200 OK
+            if (user != null) {
+                return ResponseEntity.ok(user);
+            } else {
+                // If no user is found, return 404 Not Found
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+        } catch (Exception e) {
+            // Log the error for debugging purposes
+            e.printStackTrace();
+            // Return 500 if any server-side issue occurs
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 }

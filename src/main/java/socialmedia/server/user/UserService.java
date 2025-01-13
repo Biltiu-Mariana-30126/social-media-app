@@ -24,6 +24,12 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
     }
 
+    public User authenticateByEmail(String email) {
+        User user = userRepository.findByEmail(email);
+
+        return user;
+    }
+
     public void deleteById(int id) {
         userRepository.deleteById(id);
     }

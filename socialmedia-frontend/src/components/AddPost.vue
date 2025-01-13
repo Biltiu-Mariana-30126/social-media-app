@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="showDialog" max-width="400px" class="bg-transparent">
     <div class="dialogClass">
-      Welcome, {{currentUser}}!
+      Welcome, {{ currentUser }}!
       <v-text-field
           label="Post title"
           v-model="post.title"
@@ -20,35 +20,48 @@
 import axios from 'axios';
 
 export default {
-
-  name: 'posts',
+  name: 'AddPost',
   props: {
-    currentUser: String
+    currentUser: String, // You could use the username or ID of the logged-in user
   },
   data() {
     return {
-      showDialog: Boolean,
+      showDialog: false, // Dialog visibility
       post: {
-        title: "",
-        content: "",
-      }
-    }
+        title: "", // Initialize title as an empty string
+        content: "", // Initialize content as an empty string
+      },
+    };
   },
   methods: {
+    // Method to create a post
     async createPost() {
       try {
-        const response = await axios.post('http://localhost:8082/post', this.post)
-        console.log("post created successfully:", response.data);
-        this.showDialog = false
+        // Send the POST request to the backend to create a post
+        const response = await axios.post('http://localhost:8082/posts', this.post);
+        console.log("Post created successfully:", response.data);
+
+        // Refresh the page
+        window.location.reload();
+        this.showDialog = false; // Close the dialog after successful creation
+        this.resetPost(); // Optionally reset the post data for next use
       } catch (error) {
         console.error("Error creating post:", error);
       }
     },
+    // Method to close the dialog
     closeDialog() {
       this.showDialog = false;
-      this.post = { title: "", content: "" };
+      this.resetPost(); // Reset post when dialog is closed
     },
-  }
+    // Method to reset the post data
+    resetPost() {
+      this.post = {
+        title: "",
+        content: "",
+      };
+    },
+  },
 };
 </script>
 
