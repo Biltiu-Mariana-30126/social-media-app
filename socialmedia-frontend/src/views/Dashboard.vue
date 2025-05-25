@@ -1,48 +1,48 @@
 <template>
   <v-container>
-    <h1 v-if="currentUser">Welcome, {{ currentUser.name }}!</h1>
-
-    <v-row>
-      <v-col v-for="post in posts" :key="post.id" cols="12" sm="6" md="4">
-        <v-card>
-          <v-card-title>{{ post.title }}</v-card-title>
-          <v-card-subtitle>{{ post.created_on }}</v-card-subtitle>
-          <v-card-text>{{ post.content }}</v-card-text>
-        </v-card>
+    <v-row align="center" justify="space-between" class="mb-4">
+      <v-col cols="auto">
+        <h1 v-if="currentUser">Welcome, {{ currentUser.name }}!</h1>
+      </v-col>
+      <v-col cols="auto">
+        <v-btn color="secondary" @click="$router.push('/2fa/setup')">
+          Enable Two-Factor Auth
+        </v-btn>
+        <v-btn color="primary" class="ml-2" @click="showAdd = true">
+          Create New Post
+        </v-btn>
       </v-col>
     </v-row>
 
-    <v-dialog v-model="loading" persistent>
-      <v-card>
-        <v-card-title class="headline">Loading Posts...</v-card-title>
-        <v-card-actions>
-          <v-btn text @click="loading = false">Close</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <posts-view ref="postsView" />
 
-    <v-btn @click="openDialog" style="align-content: center">
-      Create new post
-    </v-btn>
-
-    <add-post :currentUser="username" ref="addPostDialog"></add-post>
+    <add-post
+        v-model="showAdd"
+        :currentUser="currentUser"
+        @postCreated="onPostCreated"
+    />
   </v-container>
 </template>
 
 <script>
 import axios from 'axios';
+import PostsView from '@/components/PostsView.vue';
 import AddPost from '@/components/AddPost.vue';
 
 export default {
   name: 'Dashboard',
-  components: {
-    AddPost
+  components: { PostsView, AddPost },
+  props: {
+    currentUser: {
+      type: Object,
+      default: null
+    }
   },
   data() {
     return {
       posts: [],
       loading: true,
-      username: 'Nume utilizator'
+      showAdd: false
     };
   },
   created() {
@@ -50,8 +50,12 @@ export default {
   },
   methods: {
     async fetchPosts() {
+      this.loading = true;
       try {
-        const response = await axios.get('http://localhost:8082/posts');
+        const token = localStorage.getItem('jwt');
+        const response = await axios.get('/posts', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
         this.posts = response.data;
       } catch (error) {
         console.error('Error fetching posts:', error);
@@ -59,9 +63,17 @@ export default {
         this.loading = false;
       }
     },
-    openDialog() {
-      this.$refs.addPostDialog.showDialog = true;
+
+    onPostCreated() {
+      this.showAdd = false;
+      this.$refs.postsView.fetchPosts();
     }
   }
 };
 </script>
+
+<style scoped>
+.mb-4 {
+  margin-bottom: 1rem;
+}
+</style>

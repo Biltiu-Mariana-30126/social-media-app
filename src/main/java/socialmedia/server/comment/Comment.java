@@ -2,6 +2,7 @@ package socialmedia.server.comment;
 
 import jakarta.persistence.*;
 import socialmedia.server.post.Post;
+import socialmedia.server.security.AesConverter;
 import socialmedia.server.user.User;
 
 import java.sql.Timestamp;
@@ -16,7 +17,7 @@ public class Comment {
     @Column(name = "idcomment")
     private int idcomment;
 
-    @Basic
+    @Convert(converter = AesConverter.class)
     @Column(name = "content", nullable = false)
     private String content;
 

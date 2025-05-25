@@ -2,10 +2,13 @@ package socialmedia.server.post;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
+import socialmedia.server.comment.Comment;
 import socialmedia.server.user.User;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -31,6 +34,9 @@ public class Post {
     @ManyToOne
     @JoinColumn(name="user_id", nullable = true)
     private User user;
+
+    @OneToMany(mappedBy="post", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+    private List<Comment> comments = new ArrayList<>();
 
     public int getId() {
         return id;
